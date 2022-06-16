@@ -140,34 +140,6 @@ namespace CarRental.Services.Booking
 
 
 
-        /// <summary>
-        /// Fix async/await to connect the car to reservation ---------------   Data/JSON file?
-        /// </summary>
-        /// <returns></returns>
-        public Data.Models.Reservation SetMockData()
-        {
-            var car = new Car()
-            {
-                    Id = 1,
-                    RegNum = "XPR644",
-                    CarCategoryId = 3,
-                    IsAvailable = false
-            };
-            SetCar(car);
-            var reservation = new Data.Models.Reservation()
-            {
-                Id = 1,
-                BookingNum = 1001,
-                CarId = 1,
-                SocialNum = 199001011222,
-                OutgoingDate = new DateTime(2022, 06, 05, 16, 45, 0),
-                OutgoingMileAge = 1250,
-                IsReturned = false
-
-            };
-            //SetReservation(reservation);
-            return reservation;
-        }
 
         private ServiceResponse<Car> SetCar(Car car)
         {
@@ -250,6 +222,84 @@ namespace CarRental.Services.Booking
         {
             var cars = _db.Car.Where(c => c.IsAvailable).ToList();
             return cars;
+        }
+
+        /// <summary>
+        /// Fix async/await to connect the car to reservation ---------------   Data/JSON file?
+        /// </summary>
+        /// <returns></returns>
+        public async Task SetMockData()
+        {
+            var carList = new List<Car>() { 
+                new Car { 
+                    CarCategoryId = 1, RegNum="AAA100", IsAvailable=true
+                },
+                new Car {
+                    CarCategoryId = 2, RegNum="BBB200", IsAvailable=true
+                },
+                new Car {
+                    CarCategoryId = 3, RegNum="CCC300", IsAvailable=true
+                },
+                new Car {
+                    CarCategoryId = 1, RegNum="GGG100", IsAvailable=true
+                },
+                new Car {
+                    CarCategoryId = 2, RegNum="HHH200", IsAvailable=true
+                },
+                new Car {
+                    CarCategoryId = 3, RegNum="LLL300", IsAvailable=true
+                }
+            };
+            try
+            {
+                await _db.Car.AddRangeAsync(carList);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            var reservationList = new List<Reservation>()
+            {
+                new Reservation
+                {
+                    BookingNum = 1010, IsReturned = false, OutgoingDate = new DateTime(2022,06,03, 11,00,00), SocialNum = 199001011122, OutgoingMileAge = 1000,
+                    Car = new Car
+                    {
+                        CarCategoryId = 1, RegNum="DDD100", IsAvailable=false
+                    }
+                },
+                new Reservation
+                {
+                    BookingNum = 1011, IsReturned = false, OutgoingDate = new DateTime(2022,06,04, 11,00,00), SocialNum = 199102022233, OutgoingMileAge = 1000,
+                    Car = new Car
+                    {
+                        CarCategoryId = 2, RegNum="EEE200", IsAvailable=false
+                    }
+                },
+                new Reservation
+                {
+                    BookingNum = 1012, IsReturned = false, OutgoingDate = new DateTime(2022,06,05, 11,00,00), SocialNum = 199203033344, OutgoingMileAge = 1000,
+                    Car = new Car
+                    {
+                        CarCategoryId = 3, RegNum="FFF300", IsAvailable=false
+                    }
+                }
+            };
+            try
+            {
+                await _db.Reservation.AddRangeAsync(reservationList);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
         }
     }
 }

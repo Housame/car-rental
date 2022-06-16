@@ -16,7 +16,7 @@ namespace CarRental.Services.Booking
 
         Task<ServiceResponse<Data.Models.Booking>> SubmitReturnedCar(Data.Models.DTO.BookingDTO booking);
         double GetPrice(Data.Models.DTO.BookingDTO returnedCar);
-        Data.Models.Reservation SetMockData();
+        Task SetMockData();
         List<Data.Models.Car> GetAvailableCars();
     }
 }

@@ -73,13 +73,13 @@ namespace CarRental.Web.Controllers
             return Ok(cars);
         }
         [HttpGet("/api/setmockdata")]
-        public ActionResult SetMockData()
+        public async Task<ActionResult> SetMockData()
         {
             _logger.LogInformation("Setting mock data");
-            var booking = _bookingService.SetMockData();
+            await _bookingService.SetMockData();
 
 
-            return Ok(booking);
+            return Ok("Data generated");
         }
     }
 }
