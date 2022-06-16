@@ -93,10 +93,10 @@ export default {
       }
     },
     methods:{
-        async submit(){
+        submit(){
             console.log("submit",this.newBooking);
             var reservation = this.newBooking;
-            await axios.post(`https://localhost:7220/api/newReservation`, reservation).then(response => {
+            axios.post(`https://localhost:7220/api/newReservation`, reservation).then(response => {
             console.log("done",response.data);
             this.choice();
             }).catch(error =>{

@@ -46,15 +46,16 @@ namespace CarRental.Services.Booking
         /// <returns></returns>
         public async Task<ServiceResponse<Data.Models.Reservation>> SetReservation(Data.Models.DTO.ReservationDTO reservation)
         {
-            var newReserv = new Reservation
+            var newReserv = new Reservation()
             {
                 BookingNum = reservation.BookingNum,
                 OutgoingDate = DateTime.Parse(reservation.OutgoingDate),
                 OutgoingMileAge = Int32.Parse(reservation.OutgoingMileAge),
                 CarId = reservation.CarId,
-                SocialNum = Int32.Parse(reservation.SocialNumber),
+                Car = _db.Car.FirstOrDefault(c => c.Id == reservation.CarId),
+                SocialNum = Int64.Parse(reservation.SocialNumber),
                 IsReturned = false,
-                
+
 
             };
             try
