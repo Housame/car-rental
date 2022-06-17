@@ -27,7 +27,7 @@ namespace CarRental.Services.Booking
             var bookings = new List<Data.Models.Reservation>();
             try
             {
-                bookings = await _db.Reservation.ToListAsync();
+                bookings = await _db.Reservation.Where(r=> r.IsReturned == false).ToListAsync();
             }
             catch (Exception e)
             {
@@ -37,7 +37,6 @@ namespace CarRental.Services.Booking
             
             return bookings;
         }
-
 
         /// <summary>
         /// Add a new reservation to the DB
@@ -94,8 +93,10 @@ namespace CarRental.Services.Booking
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public double GetPrice(BookingDTO returnedCar)
+
         {
-            var carTypeId = _db.Reservation.First(r=> r.BookingNum == returnedCar.BookingNum).Car.CarCategoryId;
+            var carId = _db.Reservation.First(r => r.BookingNum == returnedCar.BookingNum).CarId;
+            var carTypeId = _db.Car.First(c => c.Id == carId).CarCategoryId;
 
             return Calculate(returnedCar, carTypeId);
         }
@@ -114,15 +115,15 @@ namespace CarRental.Services.Booking
             {
                 case 1:
                     {
-                        return 600 * totDays;
+                        return Math.Round(600 * totDays, 2);
                     }
                 case 2:
                     {
-                        return (600 * totDays * 1.3) + (10 * totMiles);
+                        return Math.Round((600 * totDays * 1.3) + (10 * totMiles) , 2);
                     }
                 case 3:
                     {
-                        return (6000 * totDays * 1.5) + (10 * totMiles * 1.5);
+                        return Math.Round( (6000 * totDays * 1.5) + (10 * totMiles * 1.5), 2);
                     }
                 default: return 0;
             }
@@ -179,7 +180,7 @@ namespace CarRental.Services.Booking
             try
             {
                 reservation.IsReturned = true;
-                await _db.AddAsync(booking);
+                await _db.AddAsync(submittedBooking);
                 await _db.SaveChangesAsync();
                 return new ServiceResponse<Data.Models.Booking>
                 {

@@ -34,12 +34,17 @@
                 </div>
             </div> 
 
-            <div class="field is-grouped">
+            <div v-if="!validSubmit" class="field is-grouped">
                 <div class="control">
                     <button class="button is-primary" @click="submit()" >Submit</button>
                 </div>
                 <div class="control">
                     <button class="button is-danger"  @click="choice()" >Avbryt</button>
+                </div>
+            </div>
+            <div v-show="validSubmit" class="field is-grouped">
+                <div class="control">
+                    <button class="button is-primary"  @click="choice()" >Klart</button>
                 </div>
             </div>
         </div>   
@@ -64,14 +69,17 @@ export default {
         }
     },
     methods:{
-        async submit(){
-            
-            var returnedCar = this.returnedCar;
-            console.log("submit",returnedCar);
-            await axios.get(`https://localhost:7220/api/submitReturnedCar/`,returnedCar).then(response=>{
+        submit(){
+            this.returnedCar.bookingNum = parseInt(this.returnedCar.bookingNum);
+            var _date = moment().format('YYYY-MM-DD hh:mm:ss');
+            this.returnedCar.incomingDate = _date;
+            var returnCar = this.returnedCar;
+            console.log("submit",returnCar);
+            axios.post("https://localhost:7220/api/submitReturnedCar/",returnCar).then(response=>{
                 console.log("totPrice", response.data);
                 this.totPrice = response.data;
                 this.validSubmit = true;
+
             });
         },
         choice(){
